@@ -1,6 +1,6 @@
 use super::state::{CollectedEvent, LogsState, TracerLevel};
 use super::EventCollector;
-use eframe::egui;
+use egui::{vec2, Label, Response, ScrollArea, Sense, TextStyle, Ui, Widget};
 use std::collections::BTreeMap;
 use std::sync::{Arc, Mutex};
 use time;
@@ -19,8 +19,8 @@ impl LogUi {
     }
 }
 
-impl egui::Widget for LogUi {
-    fn ui(self, ui: &mut egui::Ui) -> egui::Response {
+impl Widget for LogUi {
+    fn ui(self, ui: &mut Ui) -> Response {
         let events = self.collector.events();
         let state = ui.memory_mut(|mem| {
             mem.data
@@ -39,12 +39,8 @@ impl egui::Widget for LogUi {
             })
             .collect::<Vec<_>>();
 
-        let row_height = SEPARATOR_SPACING
-            + ui.style()
-                .text_styles
-                .get(&egui::TextStyle::Small)
-                .unwrap()
-                .size;
+        let row_height =
+            SEPARATOR_SPACING + ui.style().text_styles.get(&TextStyle::Small).unwrap().size;
 
         table(
             ui,
@@ -72,7 +68,7 @@ impl egui::Widget for LogUi {
     }
 }
 
-fn table_row(ui: &mut egui::Ui, event: &&CollectedEvent) {
+fn table_row(ui: &mut Ui, event: &&CollectedEvent) {
     let time_format = time::macros::format_description!("[hour repr:12]:[minute]:[second][period]");
     let time_format_long = time::macros::format_description!(
         "[day]-[month]-[year repr:last_two] [hour repr:12]:[minute]:[second][period]"
@@ -101,12 +97,12 @@ fn table_row(ui: &mut egui::Ui, event: &&CollectedEvent) {
     });
     table_cell(ui, 120.0, |ui| {
         let message = event.fields.get("message").unwrap();
-        ui.add(egui::Label::new(message.clone().truncate(108)).wrap(false))
+        ui.add(Label::new(message.clone().truncate(108)).wrap(false))
             .on_hover_text(message);
     });
 }
 
-fn level_menu_button(ui: &mut egui::Ui, state: &mut BTreeMap<TracerLevel, bool>) {
+fn level_menu_button(ui: &mut Ui, state: &mut BTreeMap<TracerLevel, bool>) {
     ui.menu_button("Level", |ui| {
         state.iter_mut().for_each(|(level, enabled)| {
             if ui.selectable_label(*enabled, level.to_string()).clicked() {
@@ -116,18 +112,14 @@ fn level_menu_button(ui: &mut egui::Ui, state: &mut BTreeMap<TracerLevel, bool>)
     });
 }
 
-fn table_header(
-    ui: &mut egui::Ui,
-    min_width: Option<f32>,
-    content: impl FnOnce(&mut egui::Ui),
-) -> egui::Response {
+fn table_header(ui: &mut Ui, min_width: Option<f32>, content: impl FnOnce(&mut Ui)) -> Response {
     ui.horizontal(|ui| {
         if let Some(min_width) = min_width {
             ui.set_width(min_width);
         }
         let available_space = ui.available_size_before_wrap();
-        let size = egui::vec2(PADDING_LEFT, available_space.y);
-        let (rect, response) = ui.allocate_at_least(size, egui::Sense::hover());
+        let size = vec2(PADDING_LEFT, available_space.y);
+        let (rect, response) = ui.allocate_at_least(size, Sense::hover());
         if ui.is_rect_visible(response.rect) {
             let stroke = ui.visuals().widgets.noninteractive.bg_stroke;
             let painter = ui.painter();
@@ -139,11 +131,7 @@ fn table_header(
     .response
 }
 
-fn table_cell(
-    ui: &mut egui::Ui,
-    min_width: f32,
-    content: impl FnOnce(&mut egui::Ui),
-) -> egui::Response {
+fn table_cell(ui: &mut Ui, min_width: f32, content: impl FnOnce(&mut Ui)) -> Response {
     ui.horizontal(|ui| {
         ui.set_width(min_width);
         ui.add_space(CELL_SPACING);
@@ -153,13 +141,13 @@ fn table_cell(
 }
 
 fn table<T>(
-    ui: &mut egui::Ui,
+    ui: &mut Ui,
     row_height: f32,
     values: std::slice::Iter<T>,
     on_clear: impl FnOnce(),
-    header: impl FnOnce(&mut egui::Ui),
-    row: impl Fn(&mut egui::Ui, &T),
-) -> egui::Response {
+    header: impl FnOnce(&mut Ui),
+    row: impl Fn(&mut Ui, &T),
+) -> Response {
     ui.vertical(|ui| {
         ui.horizontal(|ui| {
             ui.horizontal(|ui| {
@@ -174,7 +162,7 @@ fn table<T>(
 
         ui.separator();
 
-        egui::ScrollArea::vertical()
+        ScrollArea::vertical()
             .auto_shrink([false, false])
             .stick_to_bottom(true)
             .show_rows(ui, row_height + SEPARATOR_SPACING, values.len(), |ui, _| {

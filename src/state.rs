@@ -1,4 +1,4 @@
-use eframe::egui;
+use egui::{Color32, Ui};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::fmt::Debug;
@@ -18,7 +18,7 @@ pub(super) enum TracerLevel {
 }
 
 impl TracerLevel {
-    pub(super) fn to_color32(&self, ui: &egui::Ui) -> egui::Color32 {
+    pub(super) fn to_color32(&self, ui: &Ui) -> Color32 {
         match self {
             TracerLevel::Error => ui.visuals().error_fg_color,
             TracerLevel::Warn => ui.visuals().warn_fg_color,
