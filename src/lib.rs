@@ -7,7 +7,6 @@ use tracing_subscriber::{layer::Context, registry::LookupSpan, Layer};
 
 use state::{CollectedEvent, TracerLevel};
 
-pub use eframe::egui::Widget;
 pub use ui_tracer::LogUi;
 
 #[derive(Debug, Clone)]
