@@ -7,6 +7,8 @@ use tracing_subscriber::{layer::Context, registry::LookupSpan, Layer};
 
 use state::{CollectedEvent, TracerLevel};
 
+pub use ui_tracer::LogUi;
+
 #[derive(Debug, Clone)]
 pub struct EventCollector {
     level: Level,

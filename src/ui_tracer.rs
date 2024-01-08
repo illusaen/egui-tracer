@@ -9,12 +9,12 @@ static PADDING_LEFT: f32 = 4.0;
 pub(super) static SEPARATOR_SPACING: f32 = 6.0;
 static CELL_SPACING: f32 = PADDING_LEFT * 2.0 + 10.0;
 
-pub(super) struct LogUi {
+pub struct LogUi {
     collector: EventCollector,
 }
 
 impl LogUi {
-    pub(super) fn new(collector: EventCollector) -> Self {
+    pub fn new(collector: EventCollector) -> Self {
         Self { collector }
     }
 }
