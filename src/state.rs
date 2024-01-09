@@ -1,4 +1,4 @@
-use egui::{Color32, Ui};
+use eframe::egui::{Color32, Ui};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::fmt::Debug;
