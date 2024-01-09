@@ -1,5 +1,5 @@
 mod state;
-pub mod ui_tracer;
+mod ui_tracer;
 
 use std::sync::{Arc, Mutex};
 use tracing::{Event, Level, Subscriber};
@@ -8,6 +8,8 @@ use tracing_subscriber::{layer::Context, registry::LookupSpan, Layer};
 use state::{CollectedEvent, TracerLevel};
 
 pub use self::ui_tracer::LogUi;
+
+pub extern crate egui;
 
 #[derive(Debug, Clone)]
 pub struct EventCollector {

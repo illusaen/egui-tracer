@@ -1,6 +1,6 @@
 use super::state::{CollectedEvent, LogsState, TracerLevel};
 use super::EventCollector;
-use eframe::egui::{vec2, Label, Response, ScrollArea, Sense, TextStyle, Ui};
+use egui::{vec2, Label, Response, ScrollArea, Sense, TextStyle, Ui, Widget};
 use std::collections::BTreeMap;
 use std::sync::{Arc, Mutex};
 use time;
@@ -17,8 +17,10 @@ impl LogUi {
     pub fn new(collector: EventCollector) -> Self {
         Self { collector }
     }
+}
 
-    pub fn ui(self, ui: &mut eframe::egui::Ui) -> Response {
+impl Widget for LogUi {
+    fn ui(self, ui: &mut Ui) -> Response {
         let events = self.collector.events();
         let state = ui.memory_mut(|mem| {
             mem.data
